@@ -16,6 +16,7 @@ const formatValues = (values: any): Data => {
 const InviteModal = ({ visible, onCancel }: { visible: boolean, onCancel: any }) => {
   const onSubmit = useSubmit()
   const [onSuccess, toggleSuccess] = useToggle(false)
+  const [loading, setLoading] = useState(false)
   const [failedMessage, setFailedMessage] = useState('')
 
   return (<>
@@ -23,13 +24,22 @@ const InviteModal = ({ visible, onCancel }: { visible: boolean, onCancel: any })
       <Title>Request an invite</Title>
       <Divider />
       <Form onFinish={async (values) => {
+        setFailedMessage('')
         const formValues = formatValues(values)
-        const res = await onSubmit(formValues)
-        if (res.ok) {
-          toggleSuccess(true)
-          onCancel()
-        } else {
-          setFailedMessage(res.statusText)
+        try {
+          setLoading(true)
+          const res = await onSubmit(formValues)
+          if (res.ok) {
+            toggleSuccess(true)
+            onCancel()
+          } else {
+            setFailedMessage(res.statusText)
+          }
+        } catch (error) {
+          setFailedMessage('Network error， please refresh the page')
+          console.log(error)
+        } finally {
+          setLoading(false)
         }
       }}>
         <Form.Item
@@ -69,7 +79,7 @@ const InviteModal = ({ visible, onCancel }: { visible: boolean, onCancel: any })
           />
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit" style={{ width: '100%' }}>Send</Button>
+          <Button type="primary" htmlType="submit" style={{ width: '100%' }} loading={loading}>Send</Button>
         </Form.Item>
         {failedMessage && <Alert
           message={failedMessage}
@@ -77,7 +87,6 @@ const InviteModal = ({ visible, onCancel }: { visible: boolean, onCancel: any })
         />}
 
       </Form>
-      {/* <Button onClick={() => toggleSuccess(true)}>成功</Button> */}
     </Modal>
     <SuccessModal visible={onSuccess} onCancel={() => toggleSuccess(false)} />
   </>)
