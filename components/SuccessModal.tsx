@@ -1,7 +1,12 @@
 import { Button, Modal, Typography, Divider } from 'antd'
 const { Title, Paragraph } = Typography
 
-const SuccessModal = ({ visible, onCancel }) => {
+interface ISuccessModal {
+  visible: boolean
+  onCancel: (nextValue?: any) => void
+}
+
+const SuccessModal = ({ visible, onCancel }: ISuccessModal) => {
   return <Modal visible={visible} onCancel={onCancel} footer={null} >
     <div className="flex justify-center"><Title className="mx-auto">All done!</Title></div>
     {/* <Divider /> */}
