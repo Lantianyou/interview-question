@@ -8,7 +8,7 @@ export const mockData: Data = {
   email: "lantianyou@gmail.com"
 }
 
-export default async function emailHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+export default async function emailHandler(req: NextApiRequest, res: NextApiResponse) {
   const response = await fetch(apiEndPoint, {
     method: req.method,
     headers: {
@@ -16,5 +16,5 @@ export default async function emailHandler(req: NextApiRequest, res: NextApiResp
     },
     body: req.body
   })
-  res.status(response.status)
+  res.status(response.status).json({messgae: response.statusText})
 }

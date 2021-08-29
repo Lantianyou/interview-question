@@ -25,7 +25,12 @@ const InviteModal = ({ visible, onCancel }: { visible: boolean, onCancel: any })
       <Form onFinish={async (values) => {
         const formValues = formatValues(values)
         const res = await onSubmit(formValues)
-        console.log('res', res)
+        if (res.ok) {
+          toggleSuccess(true)
+          onCancel()
+        } else {
+          setFailedMessage(res.statusText)
+        }
       }}>
         <Form.Item
           label=""
@@ -66,10 +71,10 @@ const InviteModal = ({ visible, onCancel }: { visible: boolean, onCancel: any })
         <Form.Item>
           <Button type="primary" htmlType="submit" style={{ width: '100%' }}>Send</Button>
         </Form.Item>
-        <Alert
-          message="error"
+        {failedMessage && <Alert
+          message={failedMessage}
           type="error"
-        />
+        />}
 
       </Form>
       {/* <Button onClick={() => toggleSuccess(true)}>成功</Button> */}
